@@ -24,11 +24,22 @@ class Board():
 
 Space = namedtuple('Space', ['row', 'column', 'value'])
 
+def shortest_path(board):
+    # Find start
+    # go outward from the start and put each result in its own list
+    # if the list ends in 1 or an already visited node, discard the list
+    # go until all remaining lists end in 'E'
+    # select the shortest one
+
+    return 0
+
+##############################
+
 def test_track_paths():
     board = Board([
-        [ 0,  0, 0, 0],
-        [ 1,  1, 0,'S'],
-        [ 0,  0, 0, 0],
+        [0, 0, 0, 0],
+        [1, 1, 0, 'S'],
+        [0, 0, 0, 0],
         ['E', 0, 0, 0],
     ])
     result = board.track_paths(steps=1)
@@ -42,52 +53,43 @@ def test_track_paths():
         raise Exception(f"Whoops, track_paths returned {result}.")
 
 test_track_paths()
-    
+
 def test_find_start():
-    board = Board([
-        [ 0,  0, 0, 0],
-        [ 1, 1, 0, 'S'],
-        [ 0,  0, 0, 0],
-        ['E', 0, 0, 0],
+            board = Board([
+                [0, 0, 0, 0],
+                [1, 1, 0, 'S'],
+                [0, 0, 0, 0],
+                ['E', 0, 0, 0],
 
-    ])
+            ])
 
-    result = board.find_start()
+            result = board.find_start()
 
-    if result == (1, 3):
-        print("SUCCESS!")
-    else:
-        raise Exception(f"Whoops, find_start should have been (1, 3) but was {result}.")
+            if result == (1, 3):
+                print("SUCCESS!")
+            else:
+                raise Exception(f"Whoops, find_start should have been (1, 3) but was {result}.")
 
 
 test_find_start()
 
 def test_column():
-    board = Board([
-        ['S', 0, 0, 0],
-        [ 1,  1, 0, 0],
-        [ 0,  0, 0, 0],
-        ['E', 0, 0, 0],
+                    board = Board([
+                        ['S', 0, 0, 0],
+                        [1, 1, 0, 0],
+                        [0, 0, 0, 0],
+                        ['E', 0, 0, 0],
 
-    ])
+                    ])
 
-    result = board.columns(1)
+                    result = board.columns(1)
 
-    if result == [0, 1, 0, 0]:
-        print("SUCCESS!")
-    else:
-        raise Exception(f"Whoops, columns should have been [0, 1, 0, 0] but was {result}.")
+                    if result == [0, 1, 0, 0]:
+                        print("SUCCESS!")
+                    else:
+                        raise Exception(f"Whoops, columns should have been [0, 1, 0, 0] but was {result}.")
 
 test_column()
-
-def shortest_path(board):
-    # Find start
-    # go outward from the start and put each result in its own list
-    # if the list ends in 1 or an already visited node, discard the list
-    # go until all remaining lists end in 'E'
-    # select the shortest one
-
-    return 0
 
 def test_shortest_path():
     board = Board([
