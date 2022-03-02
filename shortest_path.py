@@ -79,6 +79,11 @@ def eliminate_invalid(paths):
     return valid_paths, completed_paths
 
 def track_paths(board, steps=999999999):
+    # Find start
+    # go outward from the start and put each result in its own list
+    # if the list ends in 1 or an already visited node, discard the list
+    # go until all remaining lists end in 'E'
+
     start_row, start_column = board.find_start()
 
     max_steps = steps
@@ -99,14 +104,15 @@ def track_paths(board, steps=999999999):
 Space = namedtuple('Space', ['row', 'column', 'value'])
 
 def shortest_path(board):
-    track_paths(board)
-    # Find start
-    # go outward from the start and put each result in its own list
-    # if the list ends in 1 or an already visited node, discard the list
-    # go until all remaining lists end in 'E'
-    # select the shortest one
+    #choose the shortest path
+    _, completed = track_paths(board)
 
-    return 0
+    lengths = [len(path[0]) for path in completed]
+
+    min_length = min(lengths)
+    options = [path for path in completed if len(path[0]) == min_length]
+
+    return min_length, options
 
 ##############################
 
@@ -201,12 +207,14 @@ def test_shortest_path():
 
     ])
 
-    result = shortest_path(board)
+    min_length, options = shortest_path(board)
 
-    if result == 7:
-        print("SUCCESS!")
+    if min_length == 8: #the number of moves counts the start in our implementation
+        print("SUCCESS at FINDING THE SHORTEST PATH!")
+        print("PATH OPTIONS: ")
+        print(options)
     else:
-        raise Exception(f"Whoops, shortest path should have been 7 but was {result}.")
+        raise Exception(f"Whoops, shortest path should have been 8 long but was {min_length}.")
 
 test_shortest_path()
 
