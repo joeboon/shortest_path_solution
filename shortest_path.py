@@ -72,7 +72,8 @@ def eliminate_invalid(paths):
     for path in paths:
         if path[-1].value == 'E':
             completed_paths.append(path)
-        elif path[-1].value == 0:
+        elif path[-1].value == 0\
+                and len(set(path)) == len(path):
             valid_paths.append(path)
 
     return valid_paths, completed_paths
@@ -103,14 +104,16 @@ def shortest_path(board):
     return 0
 
 ##############################
+
 def test_eliminate_paths():
     paths = [
         [Space(row=1, column=3, value='S'), Space(0, 3, 0)],
-        [Space(row=1, column=3, value='S'), Space(0, 3, 'E')],
+        [Space(row=1, column=3, value='S'), Space(0, 3, 'E')], #completed path
         [Space(row=1, column=3, value='S'), Space(1, 2, 0)],
-        [Space(row=1, column=3, value='S'), Space(1, 2, 1)],
+        [Space(row=1, column=3, value='S'), Space(1, 2, 1)], #off the edge, should be removed
         [Space(row=1, column=3, value='S'), Space(2, 3, 0)],
-        [Space(row=1, column=3, value='S'), Space(2, 4, 1)]
+        [Space(row=1, column=3, value='S'), Space(2, 4, 1)],
+        [Space(row=1, column=3, value='S'), Space(2, 4, 0), Space(2, 3, 0), Space(2, 4, 0)], #backtracking, should be removed
     ]
     valid, completed = eliminate_invalid(paths)
     if valid == [
@@ -122,7 +125,7 @@ def test_eliminate_paths():
     ]:
         print("SUCCESS on ELIMINATING PATHS!")
     else:
-        raise Exception(f"Whoops, track_paths returned {result}.")
+        raise Exception(f"Whoops, track_paths returned {valid} and {completed}.")
 
 
 test_eliminate_paths()
