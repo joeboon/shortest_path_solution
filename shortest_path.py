@@ -66,7 +66,16 @@ def extend(paths, board):
 
     return new_paths
 
+def eliminate_invalid(paths):
+    valid_paths = []
+    completed_paths = []
+    for path in paths:
+        if path[-1].value == 'E':
+            completed_paths.append(path)
+        elif path[-1].value == 0:
+            valid_paths.append(path)
 
+    return valid_paths, completed_paths
 
 def track_paths(board, steps=999999999):
     start_row, start_column = board.find_start()
@@ -94,7 +103,29 @@ def shortest_path(board):
     return 0
 
 ##############################
+def test_eliminate_paths():
+    paths = [
+        [Space(row=1, column=3, value='S'), Space(0, 3, 0)],
+        [Space(row=1, column=3, value='S'), Space(0, 3, 'E')],
+        [Space(row=1, column=3, value='S'), Space(1, 2, 0)],
+        [Space(row=1, column=3, value='S'), Space(1, 2, 1)],
+        [Space(row=1, column=3, value='S'), Space(2, 3, 0)],
+        [Space(row=1, column=3, value='S'), Space(2, 4, 1)]
+    ]
+    valid, completed = eliminate_invalid(paths)
+    if valid == [
+        [Space(row=1, column=3, value='S'), Space(0, 3, 0)],
+        [Space(row=1, column=3, value='S'), Space(1, 2, 0)],
+        [Space(row=1, column=3, value='S'), Space(2, 3, 0)]
+    ] and completed == [
+        [Space(row=1, column=3, value='S'), Space(0, 3, 'E')]
+    ]:
+        print("SUCCESS on ELIMINATING PATHS!")
+    else:
+        raise Exception(f"Whoops, track_paths returned {result}.")
 
+
+test_eliminate_paths()
 
 
 def test_track_paths():
