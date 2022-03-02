@@ -25,31 +25,48 @@ def extend(paths, board):
         last_item = path[-1]
 
         #north
+        new_row = last_item.row - 1
+        new_column = last_item.column
         if last_item.row > 0:
-            new_row = last_item.row - 1
-            new_column = last_item.column
             updated_path = path + [Space(new_row, new_column, board.rows[new_row][new_column])]
-            new_paths.append(updated_path)
+        else: # Add in a "null value" space that will get this path eliminated for hitting an edge
+            updated_path = path + [Space(new_row, new_column, 1)]
+
+        new_paths.append(updated_path)
+
         #west
+        new_row = last_item.row
+        new_column = last_item.column - 1
         if last_item.column > 0:
-            new_row = last_item.row
-            new_column = last_item.column - 1
             updated_path = path + [Space(new_row, new_column, board.rows[new_row][new_column])]
-            new_paths.append(updated_path)
+        else:  # Add in a "null value" space that will get this path eliminated for hitting an edge
+            updated_path = path + [Space(new_row, new_column, 1)]
+
+        new_paths.append(updated_path)
+
         #south
+        new_row = last_item.row + 1
+        new_column = last_item.column
         if last_item.row + 1 < len(board.rows):
-            new_row = last_item.row + 1
-            new_column = last_item.column
             updated_path = path + [Space(new_row, new_column, board.rows[new_row][new_column])]
-            new_paths.append(updated_path)
+        else:  # Add in a "null value" space that will get this path eliminated for hitting an edge
+            updated_path = path + [Space(new_row, new_column, 1)]
+
+        new_paths.append(updated_path)
+
         #east
+        new_row = last_item.row
+        new_column = last_item.column + 1
         if last_item.column + 1 < len(board.rows[0]): #assumes a rectangular board
-            new_row = last_item.row
-            new_column = last_item.column + 1
             updated_path = path + [Space(new_row, new_column, board.rows[new_row][new_column])]
-            new_paths.append(updated_path)
+        else:  # Add in a "null value" space that will get this path eliminated for hitting an edge
+            updated_path = path + [Space(new_row, new_column, 1)]
+
+        new_paths.append(updated_path)
 
     return new_paths
+
+
 
 def track_paths(board, steps=999999999):
     start_row, start_column = board.find_start()
@@ -79,6 +96,7 @@ def shortest_path(board):
 ##############################
 
 
+
 def test_track_paths():
     board = Board([
         [0, 0, 0, 0],
@@ -90,7 +108,8 @@ def test_track_paths():
     if result == [
         [Space(row=1, column=3, value='S'), Space(0, 3, 0)],
         [Space(row=1, column=3, value='S'), Space(1, 2, 0)],
-        [Space(row=1, column=3, value='S'), Space(2, 3, 0)]
+        [Space(row=1, column=3, value='S'), Space(2, 3, 0)],
+        [Space(row=1, column=3, value='S'), Space(1, 4, 1)]
     ]:
         print("SUCCESS on TRACKING PATHS!")
     else:
