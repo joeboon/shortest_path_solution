@@ -22,7 +22,7 @@ def test_shortest_path():
     if result == 7:
         print("SUCCESS!")
     else:
-        print(f"Whoops, shortest path should have been 7 but was {result}.")
+        raise Exception(f"Whoops, shortest path should have been 7 but was {result}.")
 
 test_shortest_path()
 
