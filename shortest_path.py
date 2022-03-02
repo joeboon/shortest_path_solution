@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 class Board():
     rows = []
 
@@ -17,7 +19,30 @@ class Board():
                 break
         return start_row, start_column
 
+    def track_paths(self, steps=999999999):
+        pass
 
+Space = namedtuple('Space', ['row', 'column', 'value'])
+
+def test_track_paths():
+    board = Board([
+        [ 0,  0, 0, 0],
+        [ 1,  1, 0,'S'],
+        [ 0,  0, 0, 0],
+        ['E', 0, 0, 0],
+    ])
+    result = board.track_paths(steps=1)
+    if result == [
+        [Space(0, 3, 0)],
+        [Space(1, 2, 0)],
+        [Space(2, 3, 0)]
+    ]:
+        print("SUCCESS!")
+    else:
+        raise Exception(f"Whoops, track_paths returned {result}.")
+
+test_track_paths()
+    
 def test_find_start():
     board = Board([
         [ 0,  0, 0, 0],
