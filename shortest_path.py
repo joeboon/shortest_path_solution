@@ -7,6 +7,36 @@ class Board():
     def columns(self, index):
         return [row[index] for row in self.rows]
 
+    def find_start(self):
+        start_row = 0
+        start_column = 0
+        for index, row in enumerate(self.rows):
+            if 'S' in row:
+                start_row = index
+                start_column = row.index('S')
+                break
+        return start_row, start_column
+
+
+def test_find_start():
+    board = Board([
+        [ 0,  0, 0, 0],
+        [ 1, 1, 0, 'S'],
+        [ 0,  0, 0, 0],
+        ['E', 0, 0, 0],
+
+    ])
+
+    result = board.find_start()
+
+    if result == (1, 3):
+        print("SUCCESS!")
+    else:
+        raise Exception(f"Whoops, find_start should have been (1, 3) but was {result}.")
+
+
+test_find_start()
+
 def test_column():
     board = Board([
         ['S', 0, 0, 0],
