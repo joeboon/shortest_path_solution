@@ -90,14 +90,16 @@ def track_paths(board, steps=999999999):
     while current_steps < max_steps and paths: #while we're under the step count and there are uneliminated paths
         paths = extend(paths, board)
         paths, completed = eliminate_invalid(paths)
-        paths_completed.append(completed)
+        if completed:
+            paths_completed.append(completed)
         current_steps += 1
 
-    return paths_completed
+    return paths, paths_completed
 
 Space = namedtuple('Space', ['row', 'column', 'value'])
 
 def shortest_path(board):
+    track_paths(board)
     # Find start
     # go outward from the start and put each result in its own list
     # if the list ends in 1 or an already visited node, discard the list
@@ -128,7 +130,7 @@ def test_eliminate_paths():
     ]:
         print("SUCCESS on ELIMINATING PATHS!")
     else:
-        raise Exception(f"Whoops, track_paths returned {valid} and {completed}.")
+        raise Exception(f"Whoops, eliminate_paths returned {valid} and {completed}.")
 
 
 test_eliminate_paths()
@@ -141,16 +143,15 @@ def test_track_paths():
         [0, 0, 0, 0],
         ['E', 0, 0, 0],
     ])
-    result = track_paths(board, steps=1)
-    if result == [
+    paths_so_far, paths_completed = track_paths(board, steps=1)
+    if paths_so_far == [
         [Space(row=1, column=3, value='S'), Space(0, 3, 0)],
         [Space(row=1, column=3, value='S'), Space(1, 2, 0)],
-        [Space(row=1, column=3, value='S'), Space(2, 3, 0)],
-        [Space(row=1, column=3, value='S'), Space(1, 4, 1)]
-    ]:
+        [Space(row=1, column=3, value='S'), Space(2, 3, 0)]
+    ] and paths_completed == []:
         print("SUCCESS on TRACKING PATHS!")
     else:
-        raise Exception(f"Whoops, track_paths returned {result}.")
+        raise Exception(f"Whoops, track_paths returned {paths_so_far} and {paths_completed}.")
 
 test_track_paths()
 
