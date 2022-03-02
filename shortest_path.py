@@ -85,12 +85,15 @@ def track_paths(board, steps=999999999):
     current_steps = 0
 
     paths = [[Space(start_row, start_column, 'S')]]
+    paths_completed = []
 
-    while current_steps < max_steps:
+    while current_steps < max_steps and paths: #while we're under the step count and there are uneliminated paths
         paths = extend(paths, board)
+        paths, completed = eliminate_invalid(paths)
+        paths_completed.append(completed)
         current_steps += 1
 
-    return paths
+    return paths_completed
 
 Space = namedtuple('Space', ['row', 'column', 'value'])
 
