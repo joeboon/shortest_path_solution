@@ -3,6 +3,9 @@ class Board():
 
     def __init__(self, rows):
         self.rows = rows
+        
+    def columns(self, index):
+        return [row[index] for row in self.rows]
 
 def test_column():
     board = Board([
