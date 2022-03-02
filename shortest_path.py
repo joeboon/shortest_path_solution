@@ -26,6 +26,12 @@ def test_column():
 test_column()
 
 def shortest_path(board):
+    # Find start
+    # go outward from the start and put each result in its own list
+    # if the list ends in 1 or an already visited node, discard the list
+    # go until all remaining lists end in 'E'
+    # select the shortest one
+
     return 0
 
 def test_shortest_path():
