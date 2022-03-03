@@ -94,7 +94,12 @@ def track_paths(board, steps=999999999): # Step number aids with automated testi
             return paths, completed
         current_steps += 1
 
-    raise Exception("Exhausted all path options and found no routes from start to finish :(.")
+    if current_steps < steps:
+        raise Exception("Exhausted all path options and found no routes from start to finish :(.")
+    else:
+        e = Exception("Exhausted step limit before finding a route.")
+        e.paths_in_progress = paths
+        e.completed_paths = completed
 
 Space = namedtuple('Space', ['row', 'column', 'value'])
 
@@ -163,17 +168,26 @@ def test_track_paths():
         [0, 0, 0, 0],
         ['E', 0, 0, 0],
     ])
-    paths_so_far, paths_completed = track_paths(board, steps=1)
-    if paths_so_far == [
-        [Space(row=1, column=3, value='S'), Space(0, 3, 0)],
-        [Space(row=1, column=3, value='S'), Space(1, 2, 0)],
-        [Space(row=1, column=3, value='S'), Space(2, 3, 0)]
-    ] and paths_completed == []:
-        print("SUCCESS on TRACKING PATHS!")
-    else:
-        raise Exception(f"Whoops, track_paths returned {paths_so_far} and {paths_completed}.")
 
-# test_track_paths()
+    try:
+        track_paths(board, steps=1)
+    except Exception as e:
+        if "step limit" in str(e):
+            paths_so_far = e.paths_in_progress
+            paths_completed = e.completed_paths
+
+            if paths_so_far == [
+                [Space(row=1, column=3, value='S'), Space(0, 3, 0)],
+                [Space(row=1, column=3, value='S'), Space(1, 2, 0)],
+                [Space(row=1, column=3, value='S'), Space(2, 3, 0)]
+            ] and paths_completed == []:
+                print("SUCCESS on TRACKING PATHS!")
+            else:
+                raise Exception(f"Whoops, track_paths returned {paths_so_far} and {paths_completed}.")
+        else:
+            raise Exception("There was an exception besides the expected one.")
+
+test_track_paths()
 
 def test_find_start():
             board = Board([
@@ -214,4 +228,26 @@ def test_shortest_path():
         raise Exception(f"Whoops, shortest path should have been 8 long but was {min_length}.")
 
 test_shortest_path()
+
+def test_shortest_path_failure():
+    blocked_board = Board([
+        [0, 0, 0, 'S'],
+        [ 1,  1, 1, 1],
+        [ 0,  0, 0, 0],
+        ['E', 0, 0, 0],
+
+    ])
+
+    try:
+        shortest_path(blocked_board)
+        raise Exception("This should have failed")
+    except Exception as e:
+        if "Exhausted all path options" in str(e):
+            pass
+        else:
+            raise e
+
+
+test_shortest_path_failure()
+
 
