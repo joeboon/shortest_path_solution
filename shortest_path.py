@@ -100,6 +100,7 @@ def track_paths(board, steps=999999999): # Step number aids with automated testi
         e = Exception("Exhausted step limit before finding a route.")
         e.paths_in_progress = paths
         e.completed_paths = completed
+        raise e
 
 Space = namedtuple('Space', ['row', 'column', 'value'])
 
@@ -171,6 +172,7 @@ def test_track_paths():
 
     try:
         track_paths(board, steps=1)
+        raise Exception("This should have excepted.")
     except Exception as e:
         if "step limit" in str(e):
             paths_so_far = e.paths_in_progress
