@@ -5,7 +5,7 @@ class Board():
 
     def __init__(self, rows):
         self.rows = rows
-        
+
     def find_start(self):
         start_row = 0
         start_column = 0
@@ -93,7 +93,7 @@ def track_paths(board, steps=999999999):
         paths = extend(paths, board)
         paths, completed = eliminate_invalid(paths)
         if completed:
-            paths_completed.append(completed)
+            paths_completed += completed
         current_steps += 1
 
     return paths, paths_completed
@@ -104,10 +104,10 @@ def shortest_path(board):
     #choose the shortest path
     _, completed = track_paths(board)
 
-    lengths = [len(path[0]) for path in completed]
+    lengths = [len(path) for path in completed]
 
     min_length = min(lengths)
-    options = [path for path in completed if len(path[0]) == min_length]
+    options = [path for path in completed if len(path) == min_length]
 
     return min_length, options
 
