@@ -82,7 +82,6 @@ def track_paths(board, steps=999999999): # Step number aids with automated testi
     current_steps = 0
 
     paths = [[Space(start_row, start_column, 'S')]]
-    paths_completed = []
 
     # go outward from the start and put each result in its own list
     while current_steps < max_steps and paths: #while we're under the step count and there are still paths that don't end in 'E'
@@ -92,10 +91,10 @@ def track_paths(board, steps=999999999): # Step number aids with automated testi
         # and add it to a list of completed paths if it found the end
         paths, completed = eliminate_invalid(paths)
         if completed:
-            paths_completed += completed
+            return paths, completed
         current_steps += 1
 
-    return paths, paths_completed
+    raise Exception("Exhausted all path options and found no routes from start to finish :(.")
 
 Space = namedtuple('Space', ['row', 'column', 'value'])
 
@@ -174,7 +173,7 @@ def test_track_paths():
     else:
         raise Exception(f"Whoops, track_paths returned {paths_so_far} and {paths_completed}.")
 
-test_track_paths()
+# test_track_paths()
 
 def test_find_start():
             board = Board([
