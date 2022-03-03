@@ -27,7 +27,7 @@ def extend(paths, board):
         if last_item.row > 0:
             updated_path = path + [Space(new_row, new_column, board.rows[new_row][new_column])]
         else: # Add in a "null value" space that will get this path eliminated for hitting an edge
-            updated_path = path + [Space(new_row, new_column, 1)]
+            updated_path = path + [Space(new_row, new_column, 'off_board')]
 
         new_paths.append(updated_path)
 
@@ -37,7 +37,7 @@ def extend(paths, board):
         if last_item.column > 0:
             updated_path = path + [Space(new_row, new_column, board.rows[new_row][new_column])]
         else:  # Add in a "null value" space that will get this path eliminated for hitting an edge
-            updated_path = path + [Space(new_row, new_column, 1)]
+            updated_path = path + [Space(new_row, new_column, 'off_board')]
 
         new_paths.append(updated_path)
 
@@ -47,7 +47,7 @@ def extend(paths, board):
         if last_item.row + 1 < len(board.rows):
             updated_path = path + [Space(new_row, new_column, board.rows[new_row][new_column])]
         else:  # Add in a "null value" space that will get this path eliminated for hitting an edge
-            updated_path = path + [Space(new_row, new_column, 1)]
+            updated_path = path + [Space(new_row, new_column, 'off_board')]
 
         new_paths.append(updated_path)
 
@@ -57,7 +57,7 @@ def extend(paths, board):
         if last_item.column + 1 < len(board.rows[0]): #assumes a rectangular board
             updated_path = path + [Space(new_row, new_column, board.rows[new_row][new_column])]
         else:  # Add in a "null value" space that will get this path eliminated for hitting an edge
-            updated_path = path + [Space(new_row, new_column, 1)]
+            updated_path = path + [Space(new_row, new_column, 'off_board')]
 
         new_paths.append(updated_path)
 
@@ -126,7 +126,7 @@ def test_extend():
         [Space(row=1, column=3, value='S'), Space(row=0, column=3, value=0)],
         [Space(row=1, column=3, value='S'), Space(row=1, column=2, value=0)],
         [Space(row=1, column=3, value='S'), Space(row=2, column=3, value=0)],
-        [Space(row=1, column=3, value='S'), Space(row=1, column=4, value=1)]
+        [Space(row=1, column=3, value='S'), Space(row=1, column=4, value='off_board')]
     ]:
         print("SUCCESS on EXTENDING PATHS!")
     else:
