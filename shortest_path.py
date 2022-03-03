@@ -116,6 +116,27 @@ def shortest_path(board):
 
 ##############################
 
+def test_extend():
+    board = Board([
+        [0, 0, 0, 0],
+        [1, 1, 0, 'S'],
+        [0, 0, 0, 0],
+        ['E', 0, 0, 0],
+    ])
+    updated_paths = extend(paths=[[Space(1, 3, 'S')]], board=board)
+    if updated_paths == [
+        [Space(row=1, column=3, value='S'), Space(row=0, column=3, value=0)],
+        [Space(row=1, column=3, value='S'), Space(row=1, column=2, value=0)],
+        [Space(row=1, column=3, value='S'), Space(row=2, column=3, value=0)],
+        [Space(row=1, column=3, value='S'), Space(row=1, column=4, value=1)]
+    ]:
+        print("SUCCESS on EXTENDING PATHS!")
+    else:
+        raise Exception(f"Whoops, extend returned {updated_paths}.")
+
+test_extend()
+
+
 def test_eliminate_paths():
     paths = [
         [Space(row=1, column=3, value='S'), Space(0, 3, 0)],
