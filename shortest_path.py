@@ -6,9 +6,6 @@ class Board():
     def __init__(self, rows):
         self.rows = rows
         
-    def columns(self, index):
-        return [row[index] for row in self.rows]
-
     def find_start(self):
         start_row = 0
         start_column = 0
@@ -201,23 +198,6 @@ def test_find_start():
 
 test_find_start()
 
-def test_column():
-                    board = Board([
-                        ['S', 0, 0, 0],
-                        [1, 1, 0, 0],
-                        [0, 0, 0, 0],
-                        ['E', 0, 0, 0],
-
-                    ])
-
-                    result = board.columns(1)
-
-                    if result == [0, 1, 0, 0]:
-                        print("SUCCESS on COLUMN CALCULATION!")
-                    else:
-                        raise Exception(f"Whoops, columns should have been [0, 1, 0, 0] but was {result}.")
-
-test_column()
 
 def test_shortest_path():
     board = Board([
