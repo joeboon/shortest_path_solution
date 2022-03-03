@@ -103,9 +103,7 @@ def shortest_path(board):
     #choose the shortest path
     _, completed = track_paths(board)
 
-    lengths = [len(path) for path in completed]
-
-    min_length = min(lengths)
+    min_length = len(min(completed, key=len))
     options = [path for path in completed if len(path) == min_length]
 
     return min_length, options
