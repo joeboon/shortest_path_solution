@@ -75,12 +75,7 @@ def eliminate_invalid(paths):
 
     return valid_paths, completed_paths
 
-def track_paths(board, steps=999999999):
-    # Find start
-    # go outward from the start and put each result in its own list
-    # if the list ends in 1 or an already visited node, discard the list
-    # go until all remaining lists end in 'E'
-
+def track_paths(board, steps=999999999): # Step number aids with automated testing
     start_row, start_column = board.find_start()
 
     max_steps = steps
@@ -89,8 +84,12 @@ def track_paths(board, steps=999999999):
     paths = [[Space(start_row, start_column, 'S')]]
     paths_completed = []
 
-    while current_steps < max_steps and paths: #while we're under the step count and there are uneliminated paths
+    # go outward from the start and put each result in its own list
+    while current_steps < max_steps and paths: #while we're under the step count and there are still paths that don't end in 'E'
         paths = extend(paths, board)
+
+        # if the list ends in 1, an edge, or an already visited node, discard the list
+        # and add it to a list of completed paths if it found the end
         paths, completed = eliminate_invalid(paths)
         if completed:
             paths_completed += completed
