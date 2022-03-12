@@ -70,7 +70,7 @@ def eliminate_invalid(paths):
         if path[-1].value == 'E':
             completed_paths.append(path)
         elif path[-1].value == 0\
-                and len(set(path)) == len(path):
+                and path[-1] not in path[:-1]:
             valid_paths.append(path)
 
     return valid_paths, completed_paths
