@@ -63,17 +63,18 @@ def extend(paths, board):
 
     return new_paths
 
-def eliminate_invalid(paths):
+def eliminate_invalid(paths, visited_spaces):
     valid_paths = []
     completed_paths = []
     for path in paths:
         if path[-1].value == 'E':
             completed_paths.append(path)
         elif path[-1].value == 0\
-                and path[-1] not in path[:-1]:
+                and path[-1] not in visited_spaces:
             valid_paths.append(path)
+            visited_spaces.add(path[-1])
 
-    return valid_paths, completed_paths
+    return valid_paths, completed_paths, visited_spaces
 
 def track_paths(board, steps=999999999): # Step number aids with automated testing
     start_row, start_column = board.find_start()
@@ -82,6 +83,7 @@ def track_paths(board, steps=999999999): # Step number aids with automated testi
     current_steps = 0
 
     paths = [[Space(start_row, start_column, 'S')]]
+    visited_spaces = {Space(start_row, start_column, 'S')}
 
     # go outward from the start and put each result in its own list
     while current_steps < max_steps and paths: #while we're under the step count and there are still paths that don't end in 'E'
@@ -89,7 +91,7 @@ def track_paths(board, steps=999999999): # Step number aids with automated testi
 
         # if the list ends in 1, an edge, or an already visited node, discard the list
         # and add it to a list of completed paths if it found the end
-        paths, completed = eliminate_invalid(paths)
+        paths, completed, visited_spaces = eliminate_invalid(paths, visited_spaces)
         if completed:
             return paths, completed
         current_steps += 1
@@ -138,25 +140,27 @@ test_extend()
 
 def test_eliminate_paths():
     paths = [
-        [Space(row=1, column=3, value='S'), Space(0, 3, 0)],
-        [Space(row=1, column=3, value='S'), Space(0, 3, 'E')], #completed path
-        [Space(row=1, column=3, value='S'), Space(1, 2, 0)],
-        [Space(row=1, column=3, value='S'), Space(1, 2, 1)], #off the edge, should be removed
-        [Space(row=1, column=3, value='S'), Space(2, 3, 0)],
-        [Space(row=1, column=3, value='S'), Space(2, 4, 1)],
-        [Space(row=1, column=3, value='S'), Space(2, 4, 0), Space(2, 3, 0), Space(2, 4, 0)], #backtracking, should be removed
+        [Space(row=1, column=3, value='S'), Space(1, 4, 0), Space(2, 4, 0)],
+        [Space(row=1, column=3, value='S'), Space(1, 2, 0), Space(1, 1, 0)],
+        [Space(row=1, column=3, value='S'), Space(0, 3, 0), Space(0, 2, 'E')], #completed path
+        [Space(row=1, column=3, value='S'), Space(2, 3, 0), Space(3, 3, 1)], #off the edge, should be removed
+        [Space(row=1, column=3, value='S'), Space(1, 4, 0), Space(row=1, column=3, value='S')], #backtracking, should be removed
+        [Space(row=1, column=3, value='S'), Space(1, 4, 0), Space(0, 3, 0)] # steps on a space reached earlier by another path, should be removed
     ]
-    valid, completed = eliminate_invalid(paths)
+    valid, completed, visited = eliminate_invalid(paths, visited_spaces={Space(row=1, column=3, value='S'), Space(1, 4, 0), Space(1, 2, 0), Space(0, 3, 0), Space(2, 3, 0)})
     if valid == [
-        [Space(row=1, column=3, value='S'), Space(0, 3, 0)],
-        [Space(row=1, column=3, value='S'), Space(1, 2, 0)],
-        [Space(row=1, column=3, value='S'), Space(2, 3, 0)]
+        [Space(row=1, column=3, value='S'), Space(row=1, column=4, value=0), Space(row=2, column=4, value=0)],
+        [Space(row=1, column=3, value='S'), Space(row=1, column=2, value=0), Space(row=1, column=1, value=0)]
     ] and completed == [
-        [Space(row=1, column=3, value='S'), Space(0, 3, 'E')]
-    ]:
+        [Space(row=1, column=3, value='S'), Space(0, 3, 0), Space(0, 2, 'E')]
+    ] and visited == {
+        Space(row=2, column=4, value=0), Space(row=1, column=1, value=0), Space(row=1, column=4, value=0),
+        Space(row=0, column=3, value=0), Space(row=2, column=3, value=0), Space(row=1, column=3, value='S'),
+        Space(row=1, column=2, value=0)
+    }:
         print("SUCCESS on ELIMINATING PATHS!")
     else:
-        raise Exception(f"Whoops, eliminate_paths returned {valid} and {completed}.")
+        raise Exception(f"Whoops, eliminate_paths returned {valid} and {completed} and {visited}.")
 
 
 test_eliminate_paths()
