@@ -125,15 +125,13 @@ def test_extend():
         ['E', 0, 0, 0],
     ])
     updated_paths = extend(paths=[[Space(1, 3, 'S')]], board=board)
-    if updated_paths == [
-        [Space(row=1, column=3, value='S'), Space(row=0, column=3, value=0)],
-        [Space(row=1, column=3, value='S'), Space(row=1, column=2, value=0)],
-        [Space(row=1, column=3, value='S'), Space(row=2, column=3, value=0)],
-        [Space(row=1, column=3, value='S'), Space(row=1, column=4, value='off_board')]
-    ]:
-        print("SUCCESS on EXTENDING PATHS!")
-    else:
-        raise Exception(f"Whoops, extend returned {updated_paths}.")
+    assert updated_paths == [
+            [Space(row=1, column=3, value='S'), Space(row=0, column=3, value=0)],
+            [Space(row=1, column=3, value='S'), Space(row=1, column=2, value=0)],
+            [Space(row=1, column=3, value='S'), Space(row=2, column=3, value=0)],
+            [Space(row=1, column=3, value='S'), Space(row=1, column=4, value='off_board')]
+        ], f"Whoops, extend returned {updated_paths}."
+    print("SUCCESS on EXTENDING PATHS!")
 
 test_extend()
 
@@ -148,20 +146,19 @@ def test_eliminate_paths():
         [Space(row=1, column=3, value='S'), Space(1, 4, 0), Space(0, 3, 0)] # steps on a space reached earlier by another path, should be removed
     ]
     valid, completed, visited = eliminate_invalid(paths, visited_spaces={Space(row=1, column=3, value='S'), Space(1, 4, 0), Space(1, 2, 0), Space(0, 3, 0), Space(2, 3, 0)})
-    if valid == [
-        [Space(row=1, column=3, value='S'), Space(row=1, column=4, value=0), Space(row=2, column=4, value=0)],
-        [Space(row=1, column=3, value='S'), Space(row=1, column=2, value=0), Space(row=1, column=1, value=0)]
-    ] and completed == [
-        [Space(row=1, column=3, value='S'), Space(0, 3, 0), Space(0, 2, 'E')]
-    ] and visited == {
-        Space(row=2, column=4, value=0), Space(row=1, column=1, value=0), Space(row=1, column=4, value=0),
-        Space(row=0, column=3, value=0), Space(row=2, column=3, value=0), Space(row=1, column=3, value='S'),
-        Space(row=1, column=2, value=0)
-    }:
-        print("SUCCESS on ELIMINATING PATHS!")
-    else:
-        raise Exception(f"Whoops, eliminate_paths returned {valid} and {completed} and {visited}.")
-
+    assert valid == [
+            [Space(row=1, column=3, value='S'), Space(row=1, column=4, value=0), Space(row=2, column=4, value=0)],
+            [Space(row=1, column=3, value='S'), Space(row=1, column=2, value=0), Space(row=1, column=1, value=0)]
+        ], f"Whoops, eliminate_paths returned valid paths {valid}."
+    assert completed == [
+            [Space(row=1, column=3, value='S'), Space(0, 3, 0), Space(0, 2, 'E')]
+        ], f"Whoops, eliminate_paths returned completed paths {completed}."
+    assert visited == {
+            Space(row=2, column=4, value=0), Space(row=1, column=1, value=0), Space(row=1, column=4, value=0),
+            Space(row=0, column=3, value=0), Space(row=2, column=3, value=0), Space(row=1, column=3, value='S'),
+            Space(row=1, column=2, value=0)
+        }, f"Whoops, eliminate_paths returned visited spaces {visited}."
+    print("SUCCESS on ELIMINATING PATHS!")
 
 test_eliminate_paths()
 
@@ -182,35 +179,33 @@ def test_track_paths():
             paths_so_far = e.paths_in_progress
             paths_completed = e.completed_paths
 
-            if paths_so_far == [
-                [Space(row=1, column=3, value='S'), Space(0, 3, 0)],
-                [Space(row=1, column=3, value='S'), Space(1, 2, 0)],
-                [Space(row=1, column=3, value='S'), Space(2, 3, 0)]
-            ] and paths_completed == []:
-                print("SUCCESS on TRACKING PATHS!")
-            else:
-                raise Exception(f"Whoops, track_paths returned {paths_so_far} and {paths_completed}.")
+            assert paths_so_far == [
+                    [Space(row=1, column=3, value='S'), Space(0, 3, 0)],
+                    [Space(row=1, column=3, value='S'), Space(1, 2, 0)],
+                    [Space(row=1, column=3, value='S'), Space(2, 3, 0)]
+                ], f"Whoops, track_paths returned paths in progress {paths_so_far}."
+            assert paths_completed == [
+                ], f"Whoops, track_paths returned completed paths {paths_completed}."
+            print("SUCCESS on TRACKING PATHS!")
         else:
             raise Exception("There was an exception besides the expected one.")
 
 test_track_paths()
 
+
 def test_find_start():
-            board = Board([
-                [0, 0, 0, 0],
-                [1, 1, 0, 'S'],
-                [0, 0, 0, 0],
-                ['E', 0, 0, 0],
+    board = Board([
+        [0, 0, 0, 0],
+        [1, 1, 0, 'S'],
+        [0, 0, 0, 0],
+        ['E', 0, 0, 0],
+    ])
 
-            ])
+    result = board.find_start()
 
-            result = board.find_start()
-
-            if result == (1, 3):
-                print("SUCCESS on FINDING START!")
-            else:
-                raise Exception(f"Whoops, find_start should have been (1, 3) but was {result}.")
-
+    assert result == (1, 3), \
+        f"Whoops, find_start should have been (1, 3) but was {result}."
+    print("SUCCESS on FINDING START!")
 
 test_find_start()
 
@@ -221,19 +216,19 @@ def test_shortest_path():
         [ 1,  1, 0, 0],
         [ 0,  0, 0, 0],
         ['E', 0, 0, 0],
-
     ])
 
     min_length, options = shortest_path(board)
 
-    if min_length == 8: #the number of moves counts the start in our implementation
-        print("SUCCESS at FINDING THE SHORTEST PATH!")
-        print("PATH OPTIONS: ")
-        print(options)
-    else:
-        raise Exception(f"Whoops, shortest path should have been 8 long but was {min_length}.")
+    assert min_length == 8, ( #the number of moves counts the start in our implementation
+        f"Whoops, shortest path should have been 8 long but was {min_length}.")
+
+    print("SUCCESS at FINDING THE SHORTEST PATH!")
+    print("PATH OPTIONS: ")
+    print(options)
 
 test_shortest_path()
+
 
 def test_shortest_path_failure():
     blocked_board = Board([
@@ -241,7 +236,6 @@ def test_shortest_path_failure():
         [ 1,  1, 1, 1],
         [ 0,  0, 0, 0],
         ['E', 0, 0, 0],
-
     ])
 
     try:
@@ -252,7 +246,6 @@ def test_shortest_path_failure():
             pass
         else:
             raise e
-
 
 test_shortest_path_failure()
 
